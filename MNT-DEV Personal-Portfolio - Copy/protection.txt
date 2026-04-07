@@ -1,0 +1,184 @@
+/ ====== CODE PROTECTION ======/
+// Prevent right-click, text selection, and copy-paste
+document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+    showToast('🚫 Right-click is disabled on this portfolio');
+});
+
+// Prevent keyboard shortcuts for copy/cut/paste/view source
+document.addEventListener('keydown', function(e) {
+    // Disable Ctrl+U (View Source)
+    if (e.ctrlKey && e.key === 'u') {
+        e.preventDefault();
+        showToast('🔒 View source is disabled');
+        return false;
+    }
+    
+    // Disable Ctrl+Shift+I (DevTools)
+    if (e.ctrlKey && e.shiftKey && e.key === 'I') {
+        e.preventDefault();
+        showToast('🛡️ Developer tools are restricted');
+        return false;
+    }
+    
+    // Disable F12 (DevTools)
+    if (e.key === 'F12') {
+        e.preventDefault();
+        showToast('🔐 Developer tools access blocked');
+        return false;
+    }
+    
+    // Disable Ctrl+S (Save Page)
+    if (e.ctrlKey && e.key === 's') {
+        e.preventDefault();
+        showToast('💾 Page saving is disabled');
+        return false;
+    }
+    
+    // Disable Ctrl+P (Print)
+    if (e.ctrlKey && e.key === 'p') {
+        e.preventDefault();
+        showToast('🖨️ Printing is disabled');
+        return false;
+    }
+});
+
+// Prevent text selection
+document.addEventListener('selectstart', function(e) {
+    e.preventDefault();
+});
+
+// Prevent drag and drop of images
+document.addEventListener('dragstart', function(e) {
+    if (e.target.tagName === 'IMG') {
+        e.preventDefault();
+        showToast('📸 Image dragging is disabled');
+    }
+});
+
+// ====== CODE PROTECTION ======
+(function() {
+    'use strict';
+    
+    // Toast notification function
+    function showToast(message) {
+        // Remove existing toast
+        const existingToast = document.querySelector('.protection-toast');
+        if (existingToast) existingToast.remove();
+        
+        // Create new toast
+        const toast = document.createElement('div');
+        toast.className = 'protection-toast';
+        toast.innerHTML = '<span>' + message + '</span><i class="fas fa-shield-alt"></i>';
+        
+        // Add styles
+        toast.style.cssText = 'position: fixed; top: 20px; right: 20px; background: linear-gradient(135deg, #ff4d4d, #ff6b6b); color: white; padding: 12px 20px; border-radius: 10px; font-family: "Poppins", sans-serif; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 10px; z-index: 99999; box-shadow: 0 5px 15px rgba(255, 77, 77, 0.3); animation: slideInRight 0.3s ease, fadeOut 0.3s ease 2.7s forwards; border: 1px solid rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px);';
+        
+        document.body.appendChild(toast);
+        
+        // Auto remove
+        setTimeout(() => {
+            if (toast.parentNode) {
+                toast.style.animation = 'slideOutRight 0.3s ease forwards';
+                setTimeout(() => toast.remove(), 300);
+            }
+        }, 3000);
+    }
+    
+    // Add CSS
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOutRight {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        * {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+        input, textarea {
+            user-select: text !important;
+            -webkit-user-select: text !important;
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Event Listeners
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        showToast('🚫 Right-click disabled');
+    });
+    
+    document.addEventListener('keydown', function(e) {
+        // Ctrl+U
+        if (e.ctrlKey && e.key === 'u') {
+            e.preventDefault();
+            showToast('🔒 View source disabled');
+            return false;
+        }
+        // Ctrl+Shift+I
+        if (e.ctrlKey && e.shiftKey && e.key === 'I') {
+            e.preventDefault();
+            showToast('🛡️ DevTools restricted');
+            return false;
+        }
+        // F12
+        if (e.key === 'F12') {
+            e.preventDefault();
+            showToast('🔐 DevTools blocked');
+            return false;
+        }
+        // Ctrl+S
+        if (e.ctrlKey && e.key === 's') {
+            e.preventDefault();
+            showToast('💾 Save disabled');
+            return false;
+        }
+        // Ctrl+P
+        if (e.ctrlKey && e.key === 'p') {
+            e.preventDefault();
+            showToast('🖨️ Print disabled');
+            return false;
+        }
+    });
+    
+    document.addEventListener('selectstart', function(e) {
+        e.preventDefault();
+    });
+    
+    document.addEventListener('dragstart', function(e) {
+        if (e.target.tagName === 'IMG') {
+            e.preventDefault();
+            showToast('📸 Image drag disabled');
+        }
+    });
+    
+    // Prevent iframe embedding
+    if (window.self !== window.top) {
+        window.top.location = window.self.location;
+        showToast('🚫 Embedding not allowed');
+    }
+    
+    // Console warning
+    console.log('%c🚨 Stop!', 'color: red; font-size: 40px; font-weight: bold;');
+    console.log('%cThis is a browser feature for developers.', 'color: #ff6b6b; font-size: 16px;');
+    console.log('%cIf told to copy-paste here, it\'s a scam!', 'color: #ff4d4d; font-size: 18px; font-weight: bold;');
+    
+    // Initial message
+    window.addEventListener('load', function() {
+        setTimeout(() => {
+            showToast('🛡️ Protection enabled');
+        }, 1000);
+    });
+})();
+// ====== END PROTECTION ======
